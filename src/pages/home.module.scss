@@ -1,1 +1,53 @@
-// TODO
+.posts {
+  margin: 3rem auto 0;
+
+  a {
+    display: block;
+
+    strong {
+      display: block;
+      margin-top: 1rem;
+
+      font-size: 1.75rem;
+      font-weight: bold;
+      color: var(--title);
+      line-height: 2rem;
+
+      transition: color 0.2s;
+    }
+
+    p {
+      margin-top: 0.5rem;
+      line-height: 1.625rem;
+    }
+
+    &:hover strong {
+      color: var(--highlight);
+    }
+
+    footer {
+      margin-top: 0.5rem;
+
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+
+      time {
+        display: flex;
+        align-items: center;
+
+        font-size: 0.875rem;
+
+        & + svg {
+          margin-left: 1rem;
+        }
+      }
+
+      svg {
+        margin-right: 0.5rem;
+      }
+
+    }
+
+  }
+}

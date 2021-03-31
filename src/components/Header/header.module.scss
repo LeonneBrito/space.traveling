@@ -1,1 +1,12 @@
-// TODO
+.container {
+  padding: 3rem 0;
+}
+
+.wrapper {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  display: flex;
+  align-items: center;
+}

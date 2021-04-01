@@ -10,11 +10,28 @@
     font-weight: 600;
     color: var(--highlight);
 
-    margin-top: 4rem; 
+    margin-top: 4rem;
     transition: filter 0.2s ease;
 
     &:hover{
       filter: brightness(0.9);
+    }
+  }
+
+  .previewExit {
+    padding: 0.5rem;
+    text-align: center;
+    background: var(--title);
+    color: var(--background);
+    border-radius: 8px;
+    font-weight: bold;
+    margin: 4rem 0 2rem;
+
+    a {
+      display: block;
+      width: 100%;
+      padding: 1.125rem 0;
+      font-size: 1.125rem;
     }
 
   }

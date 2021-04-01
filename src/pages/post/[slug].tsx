@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
@@ -15,7 +16,6 @@ import { Comments } from '../../components/Comments';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
-
 
 interface Post {
   first_publication_date: string | null;
@@ -36,9 +36,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  preview: boolean;
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({ post, preview }: PostProps): JSX.Element {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -96,6 +97,13 @@ export default function Post({ post }: PostProps): JSX.Element {
         <div id="comments">
           <Comments />
         </div>
+        {preview && (
+          <aside className={commonStyles.previewExit}>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </main>
     </>
   );
@@ -117,11 +125,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { slug } = params;
-
+export const getStaticProps: GetStaticProps = async ({
+  params: { slug },
+  preview = false,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('post', String(slug), {});
+  const response = await prismic.getByUID('post', String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   const post = {
     first_publication_date: response.first_publication_date,
@@ -140,6 +152,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       post,
+      preview,
     },
     revalidate: 60 * 60 * 24, // 24 Horas
   };

@@ -49,6 +49,7 @@ This project was made using the follow technologies:
 * [Typescript](https://www.typescriptlang.org/)
 * [NextJS](https://nextjs.org/)
 * [Prismic CMS](https://prismic.io/)
+* [Utterances](https://utteranc.es/)
 * [Jest](https://jestjs.io/pt-BR/)
 * [Date-FNS](https://date-fns.org/)
 * [React](https://reactjs.org/)

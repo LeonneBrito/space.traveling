@@ -19,6 +19,8 @@ import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
+  uid: string;
   data: {
     title: string;
     banner: {
@@ -37,9 +39,16 @@ interface Post {
 interface PostProps {
   post: Post;
   preview: boolean;
+  nextPost: Post | null;
+  prevPost: Post | null;
 }
 
-export default function Post({ post, preview }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  preview,
+  prevPost,
+  nextPost,
+}: PostProps): JSX.Element {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -80,6 +89,16 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
               <FiClock color="#BBBBBB" size={20} />
               <span>{readingTime} min</span>
             </footer>
+            <span className={styles.lastEdit}>
+              *editado em{' '}
+              {format(
+                parseISO(post.last_publication_date),
+                "d MMM yyyy', às 'HH:mm",
+                {
+                  locale: ptBR,
+                }
+              )}
+            </span>
           </div>
           <main className={styles.content}>
             {post.data.content.map(item => (
@@ -94,7 +113,25 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
             ))}
           </main>
         </article>
-        <div id="comments">
+        <div className={styles.navigatePost}>
+          {prevPost && (
+            <Link href={`/post/${prevPost.uid}`}>
+              <a className={styles.prevPost}>
+                {prevPost.data.title}
+                <span>Post anterior</span>
+              </a>
+            </Link>
+          )}
+          {nextPost && (
+            <Link href={`/post/${nextPost.uid}`}>
+              <a className={styles.nextPost}>
+                {nextPost.data.title}
+                <span>Post anterior</span>
+              </a>
+            </Link>
+          )}
+        </div>
+        <div className={commonStyles.comment} id="comments">
           <Comments />
         </div>
         {preview && (
@@ -135,8 +172,33 @@ export const getStaticProps: GetStaticProps = async ({
     ref: previewData?.ref ?? null,
   });
 
+  if (!response) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const prevPost = (
+    await prismic.query(Prismic.predicates.at('document.type', 'post'), {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date desc]',
+      fetch: ['post.title'],
+    })
+  ).results[0];
+
+  const nextPost = (
+    await prismic.query(Prismic.predicates.at('document.type', 'post'), {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date]',
+      fetch: ['post.title'],
+    })
+  ).results[0];
+
   const post = {
     first_publication_date: response.first_publication_date,
+    last_publication_date: response.last_publication_date,
     uid: response.uid,
     data: {
       title: response.data.title,
@@ -153,6 +215,8 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       post,
       preview,
+      prevPost: prevPost ?? null,
+      nextPost: nextPost ?? null,
     },
     revalidate: 60 * 60 * 24, // 24 Horas
   };

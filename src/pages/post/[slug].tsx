@@ -10,9 +10,12 @@ import { RichText } from 'prismic-dom';
 import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../../services/prismic';
 
+import Header from '../../components/Header';
+import { Comments } from '../../components/Comments';
+
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
-import Header from '../../components/Header';
+
 
 interface Post {
   first_publication_date: string | null;
@@ -90,6 +93,9 @@ export default function Post({ post }: PostProps): JSX.Element {
             ))}
           </main>
         </article>
+        <div id="comments">
+          <Comments />
+        </div>
       </main>
     </>
   );
